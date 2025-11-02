@@ -1,10 +1,48 @@
 import { useState } from 'react'
 
-function FinalEvaluation({ totalScore, maxScore, lastSaved, onAnyChange }) {
+function FinalEvaluation({ totalScore, maxScore, lastSaved, onAnyChange, questions, scores }) {
   const [overrideScore, setOverrideScore] = useState('')
+  const [showValidationError, setShowValidationError] = useState(false)
   
   // Usar el puntaje sobreescrito si existe, sino el calculado
   const finalScore = overrideScore !== '' ? parseFloat(overrideScore) : totalScore
+  
+  // Función para validar que todos los criterios requeridos tengan puntaje
+  const validateScores = () => {
+    const missingScores = []
+    questions.forEach((question) => {
+      question.rubric.forEach((criterion) => {
+        // Solo validar criterios con puntaje máximo > 0
+        if (criterion.maxPoints > 0) {
+          const score = scores[criterion.id]
+          // Verificar si el puntaje es null, undefined o string vacío
+          if (score === null || score === undefined || score === '') {
+            missingScores.push(`${question.title.split(':')[0]} - ${criterion.label}`)
+          }
+        }
+      })
+    })
+    return missingScores
+  }
+  
+  const handlePublish = () => {
+    const missingScores = validateScores()
+    if (missingScores.length > 0) {
+      setShowValidationError(true)
+      // Scroll al primer criterio sin puntaje
+      setTimeout(() => {
+        const firstMissing = document.querySelector('input[type="number"]:invalid, input[type="number"][value=""]')
+        if (firstMissing) {
+          firstMissing.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          firstMissing.focus()
+        }
+      }, 100)
+    } else {
+      setShowValidationError(false)
+      // Aquí iría la lógica para publicar la calificación
+      alert('¡Calificación publicada exitosamente!')
+    }
+  }
   
   const handleOverrideChange = (e) => {
     const value = e.target.value
@@ -102,6 +140,25 @@ function FinalEvaluation({ totalScore, maxScore, lastSaved, onAnyChange }) {
             onChange={handleCommentChange}
           ></textarea>
         </div>
+        
+        {showValidationError && (
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+            <div className="flex items-start gap-2">
+              <span className="material-symbols-outlined text-red-600 dark:text-red-400" style={{ fontSize: '20px' }}>
+                error
+              </span>
+              <div>
+                <p className="text-sm font-semibold text-red-800 dark:text-red-200 mb-1">
+                  Faltan puntajes por asignar
+                </p>
+                <p className="text-sm text-red-700 dark:text-red-300">
+                  Por favor, asigna un puntaje a todos los criterios de evaluación antes de publicar la calificación.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+        
         <div className="flex justify-between items-center">
           {lastSaved && (
             <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
@@ -113,7 +170,10 @@ function FinalEvaluation({ totalScore, maxScore, lastSaved, onAnyChange }) {
               </span>
             </div>
           )}
-          <button className="flex items-center justify-center gap-2 min-w-[120px] max-w-[480px] cursor-pointer overflow-hidden rounded-lg h-11 px-6 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors ml-auto">
+          <button 
+            onClick={handlePublish}
+            className="flex items-center justify-center gap-2 min-w-[120px] max-w-[480px] cursor-pointer overflow-hidden rounded-lg h-11 px-6 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors ml-auto"
+          >
             <span className="truncate">Publicar Calificación</span>
           </button>
         </div>

@@ -9,9 +9,8 @@ function App() {
   const [scores, setScores] = useState({
     q1_claridad: 1,
     q1_relevancia: 3,
-    q2_precision: 0,
+    q2_precision: null,
     q3_gramatica: 5,
-    q3_formato: 0,
   })
 
   const [lastSaved, setLastSaved] = useState(null)
@@ -43,13 +42,25 @@ function App() {
           id: 'q1_claridad', 
           label: 'Claridad', 
           maxPoints: 5,
-          description: 'El alumno explica los conceptos de manera clara y comprensible, utilizando un lenguaje apropiado y estructura coherente en su respuesta.'
+          description: 'El alumno explica los conceptos de manera clara y comprensible, utilizando un lenguaje apropiado y estructura coherente en su respuesta.',
+          presetScores: [
+            { label: 'Excelente', description: 'Explicación perfectamente clara y estructurada', points: 5 },
+            { label: 'Satisfactorio', description: 'Explicación clara pero con pequeñas imprecisiones', points: 3.5 },
+            { label: 'Insuficiente', description: 'Explicación confusa o poco clara', points: 1.5 },
+            { label: 'No cumple', description: 'No demuestra claridad en la respuesta', points: 0 },
+          ]
         },
         { 
           id: 'q1_relevancia', 
           label: 'Relevancia', 
           maxPoints: 5,
-          description: 'La respuesta se mantiene enfocada en el tema solicitado, incluyendo información pertinente y evitando divagaciones innecesarias.'
+          description: 'La respuesta se mantiene enfocada en el tema solicitado, incluyendo información pertinente y evitando divagaciones innecesarias.',
+          presetScores: [
+            { label: 'Excelente', description: 'Totalmente enfocado en el tema solicitado', points: 5 },
+            { label: 'Satisfactorio', description: 'Mayormente relevante con algunas divagaciones menores', points: 3.5 },
+            { label: 'Insuficiente', description: 'Se desvía frecuentemente del tema', points: 1.5 },
+            { label: 'No cumple', description: 'No responde al tema solicitado', points: 0 },
+          ]
         },
       ]
     },
@@ -62,7 +73,13 @@ function App() {
           id: 'q2_precision', 
           label: 'Precisión', 
           maxPoints: 5,
-          description: 'El alumno demuestra conocimiento preciso y exacto de los conceptos, diferenciando correctamente entre ambos términos con definiciones técnicas apropiadas.'
+          description: 'El alumno demuestra conocimiento preciso y exacto de los conceptos, diferenciando correctamente entre ambos términos con definiciones técnicas apropiadas.',
+          presetScores: [
+            { label: 'Perfecto', description: 'Conocimientos técnicos precisos y completos', points: 5 },
+            { label: 'Bueno', description: 'Conocimientos correctos con pequeñas omisiones', points: 3.5 },
+            { label: 'Regular', description: 'Conocimientos imprecisos o incompletos', points: 2.5 },
+            { label: 'No cumple', description: 'No demuestra conocimiento preciso', points: 0 },
+          ]
         },
       ]
     },
@@ -75,20 +92,22 @@ function App() {
           id: 'q3_gramatica', 
           label: 'Gramática', 
           maxPoints: 5,
-          description: 'El alumno no comete faltas gramaticales en la redacción y ocupa perfectamente las puntuaciones, demostrando dominio del lenguaje escrito.'
-        },
-        { 
-          id: 'q3_formato', 
-          label: 'Formato', 
-          maxPoints: 0,
-          description: 'Criterio de formato para la presentación de la respuesta. Actualmente sin puntaje asignado.'
+          description: 'El alumno no comete faltas gramaticales en la redacción y ocupa perfectamente las puntuaciones, demostrando dominio del lenguaje escrito.',
+          presetScores: [
+            { label: 'Impecable', description: 'Sin faltas gramaticales ni de puntuación', points: 5 },
+            { label: 'Bueno', description: 'Errores menores que no afectan comprensión', points: 3.5 },
+            { label: 'Regular', description: 'Varios errores gramaticales', points: 2 },
+            { label: 'Deficiente', description: 'Múltiples errores que afectan la claridad', points: 0.5 },
+          ]
         },
       ]
     }
   ]
 
-  // Calcular el puntaje total
-  const totalScore = Object.values(scores).reduce((sum, score) => sum + score, 0)
+  // Calcular el puntaje total (solo sumando valores que no sean null)
+  const totalScore = Object.values(scores).reduce((sum, score) => {
+    return sum + (score !== null && score !== undefined && score !== '' ? parseFloat(score) : 0)
+  }, 0)
   
   // Calcular el puntaje máximo posible
   const maxScore = questions.reduce((sum, question) => {
@@ -109,7 +128,7 @@ function App() {
       <Header />
       
       <main className="flex-1 w-full mx-auto p-4 sm:p-6 lg:p-8 pb-20">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-[1600px] mx-auto">
           <div className="flex flex-wrap justify-between gap-4 mb-8">
             <div className="flex min-w-72 flex-col gap-2">
               <p className="text-gray-800 dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">
@@ -137,6 +156,8 @@ function App() {
               maxScore={maxScore} 
               lastSaved={lastSaved}
               onAnyChange={handleAnyChange}
+              questions={questions}
+              scores={scores}
             />
           </div>
         </div>
