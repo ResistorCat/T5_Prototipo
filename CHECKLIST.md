@@ -5,10 +5,10 @@ Usa este checklist para asegurarte de que todo funciona correctamente antes de c
 ## 🧪 Testing Local
 
 ### Servidor de Desarrollo
-- [ ] Ejecuté `npm run dev` sin errores
-- [ ] El servidor se inició en `http://localhost:5173/T5_Prototipo/`
-- [ ] Puedo abrir la URL en el navegador
-- [ ] La página carga completamente sin errores en la consola
+- [x] Ejecuté `npm run dev` sin errores
+- [x] El servidor se inició en `http://localhost:5173/T5_Prototipo/`
+- [x] Puedo abrir la URL en el navegador
+- [x] La página carga completamente sin errores en la consola
 
 ### Funcionalidad del Puntaje
 - [ ] Veo el puntaje total inicial: **9.0 / 20 Puntos**
