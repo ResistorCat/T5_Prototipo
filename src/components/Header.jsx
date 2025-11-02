@@ -14,6 +14,19 @@ function Header() {
       </div>
       <div className="flex flex-1 justify-end gap-4 sm:gap-6">
         <div className="hidden sm:flex items-center gap-4">
+          <div className="flex flex-col items-start gap-1">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Progreso:</span>
+              <span className="text-sm font-bold text-gray-800 dark:text-white">5/30</span>
+            </div>
+            <div className="w-32 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-primary transition-all duration-300"
+                style={{ width: '16.67%' }}
+              />
+            </div>
+          </div>
+          <div className="h-10 w-px bg-gray-300 dark:bg-gray-700"></div>
           <div className="relative">
             <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
               search
@@ -30,9 +43,12 @@ function Header() {
             <button className="flex items-center justify-center size-8 rounded-full bg-gray-200/80 dark:bg-[#282e39] text-gray-700 dark:text-white hover:bg-gray-300 dark:hover:bg-[#3a4251] transition-colors">
               <span className="material-symbols-outlined text-xl">chevron_left</span>
             </button>
-            <a className="text-gray-800 dark:text-white text-sm font-medium leading-normal" href="#">
-              Juan Pérez
-            </a>
+            <div className="flex flex-col items-center">
+              <a className="text-gray-800 dark:text-white text-sm font-medium leading-tight" href="#">
+                Juan Pérez
+              </a>
+              <span className="text-xs text-gray-500 dark:text-gray-400">#6</span>
+            </div>
             <button className="flex items-center justify-center size-8 rounded-full bg-gray-200/80 dark:bg-[#282e39] text-gray-700 dark:text-white hover:bg-gray-300 dark:hover:bg-[#3a4251] transition-colors">
               <span className="material-symbols-outlined text-xl">chevron_right</span>
             </button>
